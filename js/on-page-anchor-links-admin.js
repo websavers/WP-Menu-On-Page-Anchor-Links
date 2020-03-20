@@ -19,7 +19,7 @@ jQuery(document).ready(function($){
                   Scroll-to HTML ID<br /> \
                   <input type="text" id="edit-menu-item-html-id-' + php_id + '" class="widefat code edit-menu-item-custom" name="menu-item-html-id[' + php_id + ']" value="" /> \
               </label> \
-              <small style="position:relative;top:-5px;">you must save the menu to get ID suggestions</small> \
+              <small style="position:relative;top:-3px;">Save the menu to get page ID suggestions</small> \
           </p>');
           
         }
@@ -34,26 +34,44 @@ jQuery(document).ready(function($){
                     Scroll-to HTML ID<br /> \
                     <input type="text" id="edit-menu-item-html-id-' + php_id + '" class="widefat code edit-menu-item-custom" name="menu-item-html-id[' + php_id + ']" value="' + cur_setting_value + '" /> \
                 </label> \
+                <small style="position:relative;top:-3px;"><a href="#" id="get-id-suggestions-' + php_id + '">Get ID Suggestions</span></small> \
             </p>');
-            
-            if (post_data.meta._menu_item_object_id > 0){
-              var page = new wp.api.models.Page( { id: post_data.meta._menu_item_object_id } );
-              page.fetch().done( function( page_data ){
-                $.get(page_data.link, function(page_html){
-                  var bb_row_ids = [];
-                  $(page_html).find('.fl-row').each(function(){
-                    bb_row_ids.push($(this).attr('id'));
-                  });
-                  if (bb_row_ids.length > 0){
-                    $('#edit-menu-item-html-id-' + php_id).after('<small style="position:relative;top:-5px;">found in beaverbuilder: ' + new String(bb_row_ids) + '</small>')
-                  }
+                          
+            $('#get-id-suggestions-' + php_id).click(function(e){
+              
+              e.preventDefault();
+              var sugg_parent = $(this).parent('small');
+              sugg_parent.html('Getting Suggestions...')
+              var page_url = $('#menu-item-settings-' + php_id + ' p.link-to-original > a').attr('href');
+              
+              $.get(page_url, function(page_html){
+                
+                var row_ids = [];
+                
+                //Detect and add BeaverBuilder Row IDs
+                $(page_html).find('.fl-row').each(function(){
+                  row_ids.push($(this).attr('id'));
+                });                    
+                
+                //Output Row IDs
+                if (row_ids.length > 0) sugg_parent.html(ws_mbi_array_to_htmllist(row_ids));
+                else sugg_parent.html('No IDs detected on page.');
+                
+                //Activate 'use' capability
+                sugg_parent.find('.use-suggestion').click(function(es){
+                  es.preventDefault();
+                  this_sugg = $(this).text();
+                  $('#edit-menu-item-html-id-' + php_id).val(this_sugg);
                 });
+                
               });
-            }
-          
+
+            });
+                        
           }, "json");
           
         }
+        
       }
       
     });
@@ -63,6 +81,15 @@ jQuery(document).ready(function($){
   function ws_mbi_get_menu_item_id(css_id){
     var pieces = css_id.split(/[\s\-]+/);
     return pieces[pieces.length-1]; //ex: 58
+  }
+  
+  function ws_mbi_array_to_htmllist(my_array){
+    var text = "<ul style='margin-top:3px;'>";
+    for (i = 0; i < my_array.length; i++) {
+      text += "<li style='display:inline;padding:0 5px 0 0;'><a href='#' class='use-suggestion'>" + my_array[i] + "</a></li>";
+    }
+    text += "</ul>";
+    return text;
   }
 
   $('#submit-posttype-page').click(function(){
