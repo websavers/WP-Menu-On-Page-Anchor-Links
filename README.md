@@ -1,7 +1,7 @@
 # WP-Menu-On-Page-Anchor-Links
 WordPress Menus only allow you to create on-page links by using a custom link, which isn't very intuitive. This plugin extends Page-type menu items by adding an on-page ID field, simplifying creating on-page anchor links in nav menus.
 
-# Full Description
+# The Problem
 With the built in functionality of WordPress, you can create links that go not just to a page, but to a section on that page, but it's not an intuitive process. Rather than adding the page you want as a menu item, you need to add a Custom Link, then manually build the URL. Here's how that looks:
 1. On the WordPress admin menu, click Appearance > Menus and make sure the menu you want to use is displayed.
 2. In the left column expand the Custom links category.
@@ -9,7 +9,7 @@ With the built in functionality of WordPress, you can create links that go not j
 4. Enter whatever link text you want your menu item to display.
 5. Click Add to menu.
 
-This plugin endeavours to make adding links to sections of page more intuitive by making the process work like this instead:
+# Our Solution
 1. On the WordPress admin menu, click Appearance > Menus and make sure the menu you want to use is displayed.
 2. In the left column select the page you want to add to the menu and click Add to Menu
 3. In the field called "Scroll-to HTML ID" that this plugin creates, enter your ID. For example: my-unique-id
