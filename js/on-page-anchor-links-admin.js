@@ -46,7 +46,9 @@ jQuery(document).ready(function($){
             
             // BeaverBuilder Row IDs, Accordion Items, Tab Panels
             $(page_html).find('.fl-row,.fl-accordion-item,.fl-tabs-panel').each(function(){
-              row_ids.push($(this).attr('id'));
+              if (typeof $(this).attr('id') !== 'undefined'){
+                row_ids.push($(this).attr('id'));
+              }
             });        
             
             //Output Row IDs
