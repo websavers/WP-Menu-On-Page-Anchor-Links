@@ -10,67 +10,57 @@ jQuery(document).ready(function($){
       var php_id = ws_mbi_get_menu_item_id(menu_item.attr('id')); //ex: menu-item-settings-58
       
       if ( $('#edit-menu-item-html-id-' + php_id).length === 0){
-        
-        if (new_menu_items){
           
-          //Insert the menu item settings field blank (don't need currently value for a new one!)
-          menu_item.find('.field-link-target').after('<p class="field-custom description description-wide"> \
-              <label for="edit-menu-item-html-id-' + php_id + '"> \
-                  Scroll-to HTML ID<br /> \
-                  <input type="text" id="edit-menu-item-html-id-' + php_id + '" class="widefat code edit-menu-item-custom" name="menu-item-html-id[' + php_id + ']" value="" /> \
-              </label> \
-              <small style="position:relative;top:-3px;">Save the menu to get page ID suggestions</small> \
-          </p>');
+        //Insert the menu item settings field with no value
+        menu_item.find('.field-link-target').after('<p class="field-custom description description-wide"> \
+            <label for="edit-menu-item-html-id-' + php_id + '"> \
+                Scroll-to HTML ID<br /> \
+                <input type="text" id="edit-menu-item-html-id-' + php_id + '" class="widefat code edit-menu-item-custom" name="menu-item-html-id[' + php_id + ']" value="" /> \
+            </label> \
+            <small style="position:relative;top:-3px;"><a href="#" id="get-id-suggestions-' + php_id + '">Get ID Suggestions</span></small> \
+        </p>');
           
-        }
-        else{
-          
+        //Get and insert current field values
+        if (!new_menu_items){ 
           var cur_setting_value = '';
           $.get(wpApiSettings.root + 'wp/v2/nav_menu_item/' + php_id, function(post_data){
             cur_setting_value = post_data.meta._menu_item_html_id;
-            //Insert the menu item settings field
-            menu_item.find('.field-link-target').after('<p class="field-custom description description-wide"> \
-                <label for="edit-menu-item-html-id-' + php_id + '"> \
-                    Scroll-to HTML ID<br /> \
-                    <input type="text" id="edit-menu-item-html-id-' + php_id + '" class="widefat code edit-menu-item-custom" name="menu-item-html-id[' + php_id + ']" value="' + cur_setting_value + '" /> \
-                </label> \
-                <small style="position:relative;top:-3px;"><a href="#" id="get-id-suggestions-' + php_id + '">Get ID Suggestions</span></small> \
-            </p>');
-                          
-            $('#get-id-suggestions-' + php_id).click(function(e){
-              
-              e.preventDefault();
-              var sugg_parent = $(this).parent('small');
-              sugg_parent.html('Getting Suggestions...')
-              var page_url = $('#menu-item-settings-' + php_id + ' p.link-to-original > a').attr('href');
-              
-              $.get(page_url, function(page_html){
-                
-                var row_ids = [];
-                
-                //Detect and add BeaverBuilder Row IDs
-                $(page_html).find('.fl-row').each(function(){
-                  row_ids.push($(this).attr('id'));
-                });                    
-                
-                //Output Row IDs
-                if (row_ids.length > 0) sugg_parent.html(ws_mbi_array_to_htmllist(row_ids));
-                else sugg_parent.html('No IDs detected on page.');
-                
-                //Activate 'use' capability
-                sugg_parent.find('.use-suggestion').click(function(es){
-                  es.preventDefault();
-                  this_sugg = $(this).text();
-                  $('#edit-menu-item-html-id-' + php_id).val(this_sugg);
-                });
-                
-              });
-
-            });
-                        
+            //Insert the current value
+            $('#edit-menu-item-html-id-' + php_id).val(cur_setting_value);
           }, "json");
-          
         }
+        
+        //Activate retrieval of suggested HTML IDs
+        $('#get-id-suggestions-' + php_id).click(function(e){
+          
+          e.preventDefault();
+          var sugg_parent = $(this).parent('small');
+          sugg_parent.html('Getting Suggestions...')
+          var page_url = $('#menu-item-settings-' + php_id + ' p.link-to-original > a').attr('href');
+          
+          $.get(page_url, function(page_html){
+            
+            var row_ids = [];
+            
+            //Detect and add BeaverBuilder Row IDs
+            $(page_html).find('.fl-row').each(function(){
+              row_ids.push($(this).attr('id'));
+            });                    
+            
+            //Output Row IDs
+            if (row_ids.length > 0) sugg_parent.html(ws_mbi_array_to_htmllist(row_ids));
+            else sugg_parent.html('No IDs detected on page.');
+            
+            //Activate 'use' capability
+            sugg_parent.find('.use-suggestion').click(function(es){
+              es.preventDefault();
+              this_sugg = $(this).text();
+              $('#edit-menu-item-html-id-' + php_id).val(this_sugg);
+            });
+            
+          });
+
+        });
         
       }
       
