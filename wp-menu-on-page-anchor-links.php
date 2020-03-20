@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Menu On-Page Anchor Links
-Description: Add BeaverBuilder Section IDs to WordPress menus for easier creation of menu items
+Description: Add On-Page IDs to WordPress menu items for easier creation of menus with on-page links.
 Based on: http://remicorson.com/sweet-custom-menu by Remi Corson
 Original URL: https://www.wpexplorer.com/adding-custom-attributes-to-wordpress-menus/
 Version: 1.0
