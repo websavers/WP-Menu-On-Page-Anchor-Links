@@ -42,10 +42,12 @@ jQuery(document).ready(function($){
             
             var row_ids = [];
             
-            //Detect and add BeaverBuilder Row IDs
-            $(page_html).find('.fl-row').each(function(){
+            // Detect IDs to suggest:
+            
+            // BeaverBuilder Row IDs, Accordion Items, Tab Panels
+            $(page_html).find('.fl-row,.fl-accordion-item,.fl-tabs-panel').each(function(){
               row_ids.push($(this).attr('id'));
-            });                    
+            });        
             
             //Output Row IDs
             if (row_ids.length > 0) sugg_parent.html(ws_mbi_array_to_htmllist(row_ids));
